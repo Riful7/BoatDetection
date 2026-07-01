@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static',filename='css/main.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <header class="header_container">
+
+            <img class="img_icon" src="{{ url_for('static',filename='icons/cargo_ship.png') }}">
+            {% for link_h in header_links -%}
+                <a class="link" href="{{ url_for(link_h.url) }}">{{ link_h.name }}</a>
+            {% endfor -%}
+
+        </header>
+    {% block body %}{% endblock %}
+    </body>
+</html>

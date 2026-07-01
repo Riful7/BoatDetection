@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Мониторинг судов
+{% endblock %}
+
+{% block body %}
+
+<h1 class="head">Обработка изображений</h1>
+
+{% for cat,msg in get_flashed_messages(True) %}
+<div class = "flash_msg {{cat}}"> {{msg}} </div>
+{% endfor %}
+
+<div class = "input_container">
+
+        <form action = "{{ url_for('upload_img') }}" method="POST" enctype="multipart/form-data">
+
+            <label class="btn">
+                Выберите файл <input type="file" name="img">
+            </label>
+
+            <label class="btn">
+                 Начать обработку <input class ="btn" type="submit">
+            </label>
+
+
+        </form>
+</div>
+{% endblock %}

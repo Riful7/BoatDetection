@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Мониторинг судов
+{% endblock %}
+
+
+{% block body %}
+<h1 class="head">Главная страница</h1>
+
+<div class="main_info">
+    <div class="main_info_element hor">
+        <img class="img_icon big" src="{{ url_for('static',filename='icons/photo.png') }}" >
+        <div class="main_info_element vert">
+            <span class="text big">
+                Шаг 1.
+            </span>
+
+            <span class="text">
+                Загрузите файл с одним из форматов (PNG, JPG, JPEG) и начните обработку. ИИ автоматически проведёт мониторинг судов в порту.
+            </span>
+        </div>
+    </div>
+
+    <div class="main_info_element hor">
+        <div class="main_info_element vert">
+            <span class="text big">
+                Шаг 2.
+            </span>
+
+            <span class="text">
+                После завершения обработки файла, система автоматически загрузит результаты в базу данных.
+            </span>
+        </div>
+        <img class="img_icon big" src="{{ url_for('static',filename='icons/database.png') }}" >
+
+    </div>
+
+    <div class="main_info_element hor">
+        <img class="img_icon big" src="{{ url_for('static',filename='icons/report.png') }}" >
+        <div class="main_info_element vert">
+            <span class="text big">
+                Шаг 3.
+            </span>
+
+            <span class="text">
+                Вы можете изучить историю ваших обработок, скачать статистику в формате файлов JSON и XLSX, а также скачать результаты обработки в формате ZIP архива.
+            </span>
+        </div>
+
+    </div>
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Мониторинг судов
+{% endblock %}
+
+
+{% block body %}
+
+<div class = 'data_container'>
+    <h1 class="head">Представление данных</h1>
+
+    {% for cat,msg in get_flashed_messages(True) %}
+    <div class = "flash_msg {{cat}}"> {{msg}} </div>
+    {% endfor %}
+
+
+    <div class='btn_container'>
+
+        <form action = "{{ url_for('make_report') }}" method="GET">
+            <label class="btn">
+                 Сохранить XLSX <input type="submit">
+            </label>
+        </form>
+        
+        <form action = "{{ url_for('clear_db') }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите очистить историю?')">
+            <label class="btn danger">
+                 Очистить историю <input type="submit">
+            </label>
+        </form>
+
+    </div>
+
+    <table class='view_table'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Дата, время</th>
+                <th>Оригинальный файл</th>
+                <th>Результатный файл</th>
+                <th>Файл со статистикой</th>
+                <th>Скачать одним файлом</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for record in data %}
+            <tr>
+                <td>{{ record['ID'] }}</td>
+                <td>{{ record['datetime_detect'] }}</td>
+                <td> <a href="{{ url_for('download',url = record['source_img_url']) }}"> {{ record['source_img_url'].split('/')[-1] }}</a> </td>
+                <td> <a href="{{ url_for('download',url = record['result_img_url']) }}"> {{ record['result_img_url'].split('/')[-1] }}</a> </td>
+                <td> <a href="{{ url_for('download',url = record['json_data_url']) }}"> {{ record['json_data_url'].split('/')[-1] }}</a></td>
+                <td> <a href="{{ url_for('download_zip',id = record['ID']) }}"> Скачать</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
