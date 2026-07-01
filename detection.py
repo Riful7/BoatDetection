@@ -32,11 +32,3 @@ def process_img(file_dir: str, filename: str) -> bool:
         print(ex)
         shutil.rmtree(file_dir)
         return False
-
-
-    # for box in results[0].boxes:
-    #     # print(type(box))
-    #     box: Boxes
-    #     cls = int(box.cls)
-    #     conf = float(box.conf)
-    #     print(model.names[cls], cls,conf, box.xywh[0].tolist())
