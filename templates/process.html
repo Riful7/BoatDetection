@@ -14,10 +14,10 @@
 
 <div class = "input_container">
 
-        <form action = "{{ url_for('upload_img') }}" method="POST" enctype="multipart/form-data">
+        <form action = "{{ url_for('upload_img') }}" method="POST" enctype="multipart/form-data" >
 
             <label class="btn">
-                Выберите файл <input type="file" name="img">
+                Выберите файл(-ы) <input type="file" name="img" multiple>
             </label>
 
             <label class="btn">

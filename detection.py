@@ -9,9 +9,10 @@ import shutil
 def process_img(file_dir: str, filename: str) -> bool:
     """Детекция судов на фото и сохранение результатов"""
     try:
-        model = YOLO('yolov8n.pt')
+        model = YOLO('yolov8s.pt')
         results: list[Results] = model(os.path.join(file_dir, filename))
         boats = [box.cls for box in results[0].boxes if box.cls == 8]
+
 
         # Формирование фото с результатами
         res_name = "result_"+filename

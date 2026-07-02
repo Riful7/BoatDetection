@@ -146,55 +146,63 @@ def request_entity_too_large(error):
 def upload_img():
     """Загрузка фото для обработки"""
     if request.method == 'POST':
-        file = request.files['img']
-        if file.filename != '' and file.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
-            # Получение названия файла
-            filename = secure_filename(file.filename)
+        files = request.files.getlist('img')
+        for file in files:
 
-            # Получение текущей даты и времени
-            current_date_time = datetime.now()
-            str_date_time = current_date_time.strftime('%Y_%m_%d_%H_%M_%S_%f')
+            if file.filename != '' and file.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
+                # Получение названия файла
+                filename = secure_filename(file.filename)
 
-            # Определение и создание директории с результатми обработки
-            file_dir = os.path.join(app.config['UPLOAD_FOLDER'], "{0}/".format(str_date_time))
-            Path(file_dir).mkdir(parents=True, exist_ok=True)
+                # Получение текущей даты и времени
+                current_date_time = datetime.now()
+                str_date_time = current_date_time.strftime('%Y_%m_%d_%H_%M_%S_%f')
 
-            # Сохранение файла на обработку
-            file_path = os.path.join(file_dir, filename)
-            file.save(file_path)
+                # Определение и создание директории с результатми обработки
+                Path(app.config['UPLOAD_FOLDER']).mkdir(parents=True, exist_ok=True)
+
+                file_dir = os.path.join(app.config['UPLOAD_FOLDER'], "{0}/".format(str_date_time))
+                Path(file_dir).mkdir(parents=True, exist_ok=True)
+
+                # Сохранение файла на обработку
+                file_path = os.path.join(file_dir, filename)
+                file.save(file_path)
 
 
-            # Запуск обработки
-            detection_result = detection.process_img(file_dir, filename)
+                # Запуск обработки
+                detection_result = detection.process_img(file_dir, filename)
 
-            # Если обработка успешна
-            if detection_result:
-                flash("Обработка выполнена.", category="good")
-                result_name = "result_" + filename
-                json_name = "data.json"
+                # Если обработка успешна
+                if detection_result:
+                    flash(f"Обработка {filename} выполнена.", category="good")
+                    result_name = "result_" + filename
+                    json_name = "data.json"
 
-                record_data={"datetime_detect":current_date_time.timestamp(),
-                             "source_img_url":file_path,
-                             "result_img_url":os.path.join(file_dir, result_name),
-                             "json_data_url":os.path.join(file_dir, json_name)}
+                    record_data={"datetime_detect":current_date_time.timestamp(),
+                                 "source_img_url":file_path,
+                                 "result_img_url":os.path.join(file_dir, result_name),
+                                 "json_data_url":os.path.join(file_dir, json_name)}
 
-                db = get_db()
+                    db = get_db()
 
-                # Добавление записи в БД
-                result_insert = insert_data(db, record_data)
+                    # Добавление записи в БД
+                    result_insert = insert_data(db, record_data)
 
-                # Если добавление в БД успешно
-                if result_insert:
-                    flash("Результаты обработки сохранены.", category="good")
+                    # Если добавление в БД успешно
+                    if result_insert:
+                        flash("Результаты обработки сохранены.", category="good")
+                    else:
+                        shutil.rmtree(file_dir)
+                        flash("Не удалось сохранить результаты обработки. Повторите снова.", category="bad")
                 else:
                     shutil.rmtree(file_dir)
-                    flash("Не удалось сохранить результаты обработки. Повторите снова.", category="bad")
-            else:
-                shutil.rmtree(file_dir)
-                flash("Возникла ошибка во время обработки. Повторите обработку.", category="bad")
+                    flash("Возникла ошибка во время обработки. Повторите обработку.", category="bad")
 
-        else:
-            flash("Выбран неккоректный файл.", category="bad")
+            else:
+                files.pop()
+                if len(files)==0:
+                    flash(f"Не были выбраны файлы", category="bad")
+                else:
+                    flash(f"Выбран неккоректный файл: {file}", category="bad")
 
     return redirect(url_for('process'))
 
